@@ -24,7 +24,7 @@ resource "aws_instance" "one-server" {
 resource "aws_launch_configuration" "redeem" {
     image_id = "ami-00f499a80f4608e1b"
     instance_type = "t3.nano"
-    #security_groups = [aws_security_group.access-group.id]
+    security_groups = [aws_security_group.access-group.id]
 
     user_data = <<-EOF
                 #!/bin/bash
@@ -109,8 +109,8 @@ resource "aws_security_group" "alb" {
 
     # Allow inbound HTTP requests
     ingress {
-        from_port = 80
-        to_port = 80
+        from_port = var.server_port
+        to_port = var.server_port
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
@@ -140,7 +140,7 @@ resource "aws_lb_listener_rule" "asg" {
   }
 }
 
-/*
+
 resource "aws_security_group" "access-group" {
     name = "label-server-access-group"
 
@@ -151,7 +151,7 @@ resource "aws_security_group" "access-group" {
         cidr_blocks = ["0.0.0.0/0"]
     }
 }
-*/
+
 
 variable "server_port" {
   description = "The port the server will use for HTTP requests"
